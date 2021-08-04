@@ -1,6 +1,6 @@
 $(function(){
     
-    let baiduPath = "https://pan.baidu.com/mbox/msg/shareinfo?msg_id=4920188130959164828&page=1&from_uk=1101124283129&gid=757943779352721904&type=2&fs_id=556931306302254&num=50&bdstoken=0336a91401ceff583445145d1fe2ef2d&channel=chunlei&web=1&app_id=250528&logid=MTYyODA0MTA2NDk1MDAuMTIzNzI1MzkyMTEzODAzNTE=&clienttype=0"
+    let baiduPath = "https://pan.baidu.com/mbox/msg/shareinfo?msg_id=1123758322217357608&page=1&from_uk=3253638235&gid=757943779352721904&type=2&fs_id=129220754174126&num=50&bdstoken=0336a91401ceff583445145d1fe2ef2d&channel=chunlei&web=1&app_id=250528&logid=MTYyODA2MDI1MDcxODAuNTgxMDYwOTI4Mjk0NTk1OA==&clienttype=0"
 
     // 此操作需在控制台进行，本地或非百度云盘域名执行会报跨域错误
     // 主目录名称存为数组
@@ -20,15 +20,28 @@ $(function(){
     var beganUrl = "";
     var endedUrl = "";
     var middleUrl = "";
+    var page = 1
     function dir(url,fuhao){
         fuhao += "——";
         $.ajax({
             // 百度网盘接口
             // 路径请点击分享链接的networking获取，只需更改dir即可
-            url: beganUrl + url + endedUrl,
+            url: url,
             dataType:"json",
             async:false,
             success:function(data){
+                if (data.has_more) {
+                    page = getQueryVariable(url, "page");
+                    var pageNumber = parseInt(page)
+                    //  切割字符串
+                    var tArr = url.split("page=" + pageNumber);
+                    pageNumber++;
+                    var lUrl = tArr[0];
+                    var rUrl = tArr[1];
+                    var reUrl = lUrl + "page=" + pageNumber + rUrl
+                    console.log(reUrl)
+                    dir(reUrl,fuhao);
+                }
                 var list = data.records;
                 // 循环列表
                 for(var m = 0;m < list.length;m++){
